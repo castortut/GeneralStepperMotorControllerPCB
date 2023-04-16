@@ -1,6 +1,6 @@
 # Motor controller features
 
-Motor controller features for designing a stepper motor driver board that supports A4988 and DRV8825 motor controllers**
+Notes about motor controller features for designing a stepper motor driver board that supports A4988 and DRV8825 motor controllers.
 
 ### A4988
 
@@ -50,6 +50,8 @@ Motor controller features for designing a stepper motor driver board that suppor
   - Connect RESET high. No need to control.
   
   - Connect SLEEP high. No need to control.
+    
+    
 
 ### DRV8825
 
@@ -86,6 +88,10 @@ Motor controller features for designing a stepper motor driver board that suppor
   - LLH 1/16
   
   - HHH or LHH or HLH 1/32
+
+
+
+
 
 ### Combined conclusions:
 
