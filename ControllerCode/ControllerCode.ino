@@ -33,8 +33,11 @@ constexpr unsigned int PIN_NOT_USED_2 = 1;          // Not used pin
 constexpr unsigned int PIN_NOT_USED_3 = 12;         // Not used pin
 
 // Motor speed and acceleration constants
-constexpr int STEPPER_MAX_SPEED = 500;     // Magic number from testing the motor in the project
+constexpr int STEPPER_MAX_SPEED = 1000;     // Magic number from testing the motor in the project
 constexpr int DC_MOTOR_MAX_SPEED = 255;    // 8-bit value written to motor PWM pin
+
+constexpr unsigned int stepper_motor_acceleration = 2;       // Acceleration every millisecond
+constexpr unsigned int dc_motor_acceleration = 5;             // Acceleration every millisecond
 
 /**************************************************************/
 /*                      GLOBAL VARIABLES                      */
@@ -45,9 +48,6 @@ AccelStepper stepper(AccelStepper::DRIVER, PIN_STEPPER_STEP, PIN_STEPPER_DIRECTI
 
 int stepper_motor_speed = 0;
 int dc_motor_speed = 0;
-
-unsigned int stepper_motor_acceleration = 10;       // Acceleration every millisecond
-unsigned int dc_motor_acceleration = 5;             // Acceleration every millisecond
 
 unsigned long last_motor_speed_calculation_time = 0;
 
@@ -98,15 +98,18 @@ void loop() {
             // If button 2 is pressed, decrease speed
             stepper_motor_speed -= stepper_motor_acceleration;
         } else { // If buttons are not pressed, stop the motor
-            if (stepper_motor_speed > 0) {
-                stepper_motor_speed -= stepper_motor_acceleration;
-            } else if (stepper_motor_speed < 0) {
-                stepper_motor_speed += stepper_motor_acceleration;
-            }
+            stepper_motor_speed = 0;
         }
 
         // Constrain the stepper motor speed to the max speed
         stepper_motor_speed = constrain(stepper_motor_speed, -STEPPER_MAX_SPEED, STEPPER_MAX_SPEED);
+
+        // If stepper speed is not 0, set PIN_STEPPER_ENABLE high
+        if (stepper_motor_speed != 0) {
+          digitalWrite(PIN_STEPPER_ENABLE, HIGH);
+        } else {
+          digitalWrite(PIN_STEPPER_ENABLE, LOW);
+        }
 
         // Set the stepper motor speed
         stepper.setSpeed(stepper_motor_speed);
